@@ -31,7 +31,7 @@ for FILE in $FILES; do
   # Traitement de la bibliographie, des citations en ligne
   color pandoc -s -N -f markdown -t markdown-citations-simple_tables-multiline_tables-grid_tables \
     --metadata-file=sources/includes/metadata.yaml \
-    --filter pandoc-fignos --citeproc --csl=sources/includes/${STYLE}.csl \
+    --filter pandoc-crossref --citeproc --csl=sources/includes/${STYLE}.csl \
     -o $FILE $FILE
   # Corrige le chemin vers les images pour qu'il soit correctement interprété par Hugo
   sed -I "" 's/sources\/images\//\/images\//g' $FILE
