@@ -34,6 +34,7 @@ for FILE in $FILES; do
     --filter pandoc-crossref --citeproc --csl=sources/includes/${STYLE}.csl \
     -o $FILE $FILE
   # Corrige le chemin vers les images pour qu'il soit correctement interprété par Hugo
+  sed -I "" 's/\/sources\/images\//\/images\//g' $FILE
   sed -I "" 's/sources\/images\//\/images\//g' $FILE
   # Supprime les 'ancres' des figures qui ne sont pas interprétées par Hugo
   sed -I "" -E 's/{#.+}//g' $FILE
@@ -45,6 +46,9 @@ for FILE in $FILES; do
   # sed -I "" -E 's/^\[\]\((.+)\)/\1/' $FILE
   # Supprime les délimiteurs de blocs
   sed -I "" -E '/\[\]\(START\)|\[\]\(END\)/d' $FILE
+  # Supprime les échappements excessifs de pandoc devant les blockquotes github
+  sed -I "" -E '/^>/s/\\(\[.*)/\1/g' $FILE
+  sed -I "" -E '/^>/s/\\(\].*)/\1/g' $FILE
 done
 
 # Génère les listes bibliographiques dans chaque langue
@@ -99,6 +103,9 @@ for FILE in $FILES; do
   sed -I "" -E 's/^\[\]\((.+)\)/\1/' $FILE
   # Supprime les délimiteurs de blocs
   sed -I "" -E '/\[\]\(START\)|\[\]\(END\)/d' $FILE
+  # Supprime les échappements excessifs de pandoc devant les blockquotes github
+  sed -I "" -E '/^>/s/\\(\[.*)/\1/g' $FILE
+  sed -I "" -E '/^>/s/\\(\].*)/\1/g' $FILE
 done
 
 for DIR in $(find tmp/* -type d); do
