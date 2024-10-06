@@ -8,7 +8,7 @@ function color(){
 
 LANGS=(fr)
 STYLE=chicago-author-date
-BIB=r-introduction.bib
+BIB=biblio.bib
 SLIDE_LANG=fr
 
 ## Gestion des notes de cours
