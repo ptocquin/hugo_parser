@@ -29,7 +29,7 @@ for FILE in $FILES; do
   # Supprime les transitions de slides
   sed -I "" -E 's/\[\]\(-+\)//' $FILE
   # Traitement de la bibliographie, des citations en ligne
-  color pandoc -s -N -f markdown -t markdown-citations-simple_tables-multiline_tables-grid_tables \
+  color pandoc -s -N -f markdown -t markdown-citations-simple_tables-multiline_tables-grid_tables-raw_attribute \
     --metadata-file=sources/includes/metadata.yaml \
     --filter pandoc-crossref --citeproc --csl=sources/includes/${STYLE}.csl \
     -o $FILE $FILE
@@ -84,6 +84,7 @@ for FILE in $FILES; do
   #   --filter pandoc-fignos --citeproc --csl=sources/includes/${STYLE}.csl \
   #   -o $FILE $FILE
   # Corrige le chemin vers les images pour qu'il soit correctement interprété par Hugo
+  sed -I "" 's/\/sources\/images\//\/images\//g' $FILE
   sed -I "" 's/sources\/images\//\/images\//g' $FILE
   # Supprime les 'ancres' des figures qui ne sont pas interprétées par Hugo
   sed -I "" -E 's/{[#@]fig:.+}//g' $FILE
