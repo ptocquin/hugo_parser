@@ -34,8 +34,8 @@ for FILE in $FILES; do
     --filter pandoc-crossref --citeproc --csl=sources/includes/${STYLE}.csl \
     -o $FILE $FILE
   # Corrige le chemin vers les images pour qu'il soit correctement interprété par Hugo
-  sed -I "" 's/\/sources\/images\//\/images\//g' $FILE
-  sed -I "" 's/sources\/images\//\/images\//g' $FILE
+  sed -I "" 's/\/sources\//\//g' $FILE
+  sed -I "" 's/sources\//\//g' $FILE
   # Supprime les 'ancres' des figures qui ne sont pas interprétées par Hugo
   sed -I "" -E 's/{#.+}//g' $FILE
   # Place les balises de .classe à la ligne car Pandoc les remet dans le Blockquote
