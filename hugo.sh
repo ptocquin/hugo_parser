@@ -32,6 +32,7 @@ for FILE in $FILES; do
   color pandoc -s -N -f markdown -t markdown-citations-simple_tables-multiline_tables-grid_tables-raw_attribute \
     --metadata-file=sources/includes/metadata.yaml \
     --filter pandoc-crossref --citeproc --csl=sources/includes/${STYLE}.csl \
+    --wrap=preserve \
     -o $FILE $FILE
   # Corrige le chemin vers les images pour qu'il soit correctement interprété par Hugo
   sed -I "" 's/\/sources\//\//g' $FILE
