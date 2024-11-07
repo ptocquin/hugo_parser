@@ -25,9 +25,13 @@ for FILE in $FILES; do
   echo "Traitement de $FILE"
   # Supprime les commentaires vides destinés à garder des paragraphes pour les
   # slides
-  sed -I "" -E 's/\[\]\(\) //g' $FILE
+  sed -I "" -E '/\[\]\(\).*/d' $FILE
   # Supprime les transitions de slides
   sed -I "" -E 's/\[\]\(-+\)//' $FILE
+  # Supprime les délimiteurs de blocs
+  sed -I "" -E '/\[\]\(START\)|\[\]\(END\)/d' $FILE
+  # transforme les commentaires remplis en paragraphe ->> Only TEXT
+  sed -I "" -E 's/^\[\]\((.*)\)/\1/' $FILE
   # Traitement de la bibliographie, des citations en ligne
   color pandoc -s -N -f markdown -t markdown-citations-simple_tables-multiline_tables-grid_tables-raw_attribute \
     --metadata-file=sources/includes/metadata.yaml \
@@ -43,10 +47,6 @@ for FILE in $FILES; do
   # et elle ne sont donc plus interprétées par Hugo
   sed -I "" -E 's/({\..+})/\n\1/' $FILE
 
-  sed -I "" -E 's/^\[\]\(\)(.*)/\1/' $FILE
-  # sed -I "" -E 's/^\[\]\((.+)\)/\1/' $FILE
-  # Supprime les délimiteurs de blocs
-  sed -I "" -E '/\[\]\(START\)|\[\]\(END\)/d' $FILE
   # Supprime les échappements excessifs de pandoc devant les blockquotes github
   sed -I "" -E '/^>/s/\\(\[.*)/\1/g' $FILE
   sed -I "" -E '/^>/s/\\(\].*)/\1/g' $FILE
@@ -92,19 +92,31 @@ for FILE in $FILES; do
   # Place les balises de .classe à la ligne car Pandoc les remet dasn le Blockquote
   # et elle ne sont donc plus interprétées par Hugo
   sed -I "" -E 's/({\..+})/\n\1/' $FILE
-  # PLace un espace devant les éventuels commentaires dans les blocs de code
+  # Place un espace devant les éventuels commentaires dans les blocs de code
   # pour éviter qu'ils ne soient interprétés comme des titres
   sed -I "" -E '/^```.+/,/^```/ s/^(#.*)/ \1/' $FILE
+
   # Convertit les blocs délimités par [](START) [](END) par
   # des lignes préfixées par []()
   sed -I "" -E '/^\[\]\(START\)/,/^\[\]\(END\)/ s/^(.*)/\[\]\(\) \1/' $FILE
+
   # Supprime ce qui n'est ni titre, ni commentaire vide
   # ! signifie delete other than specified pattern
   sed -I "" -E '/^(#|\[\]\()|^$/!d' $FILE
-  sed -I "" -E 's/^\[\]\(\)(.*)/\1/' $FILE
-  sed -I "" -E 's/^\[\]\((.+)\)/\1/' $FILE
+
   # Supprime les délimiteurs de blocs
   sed -I "" -E '/\[\]\(START\)|\[\]\(END\)/d' $FILE
+  # Supprime les commentaires dans les blocs slides (TEXT Only)
+  sed -I "" -E '/^\[\]\(\) \[\]\(.*/d' $FILE
+  # Convertit les transitions de slides
+  sed -I "" -E 's/\[\]\((-+)\)/\1/' $FILE
+  # # Les commentaires restant sont considérés comme TEXT ONLY
+  # # On les supprime donc ici
+  # sed -I "" -E '/^\[\]\((.+)\)$/d' $FILE
+  
+  # Supprime enfin les balises de commentaires
+  sed -I "" -E 's/^\[\]\(()\) /\1/' $FILE
+
   # Supprime les échappements excessifs de pandoc devant les blockquotes github
   sed -I "" -E '/^>/s/\\(\[.*)/\1/g' $FILE
   sed -I "" -E '/^>/s/\\(\].*)/\1/g' $FILE
